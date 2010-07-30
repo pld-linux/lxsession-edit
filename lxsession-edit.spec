@@ -7,7 +7,9 @@ Group:		X11/Applications
 Source0:	http://downloads.sourceforge.net/lxde/%{name}-%{version}.tar.gz
 # Source0-md5:	55b4553869209e0932cc73e8daefc854
 URL:		http://www.lxde.org/
+BuildRequires:	gettext-devel
 BuildRequires:	gtk+2-devel >= 2:2.12.0
+BuildRequires:	pkgconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -19,6 +21,7 @@ especially for lxsession lite.
 
 %build
 %configure
+touch po/stamp-it
 %{__make}
 
 %install

@@ -1,14 +1,24 @@
+#
+# Conditional build:
+%bcond_with		gtk3		# build GTK+3 disables GTK+2
+%bcond_without		gtk2	# build with GTK+2
+
+%if %{with gtk3}
+%undefine	with_gtk2
+%endif
+
 Summary:	Tool to manage desktop session autostarts
 Name:		lxsession-edit
-Version:	0.1.1
+Version:	0.2.0
 Release:	1
 License:	GPL v3
 Group:		X11/Applications
 Source0:	http://downloads.sourceforge.net/lxde/%{name}-%{version}.tar.gz
-# Source0-md5:	55b4553869209e0932cc73e8daefc854
+# Source0-md5:	1e763a9b7f297ba964cd41b30edfccd7
 URL:		http://www.lxde.org/
 BuildRequires:	gettext-devel
-BuildRequires:	gtk+2-devel >= 2:2.12.0
+%{?with_gtk2:BuildRequires:	gtk+2-devel >= 2:2.12.0}
+%{?with_gtk3:BuildRequires:	gtk+3-devel}
 BuildRequires:	pkgconfig
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -20,17 +30,17 @@ especially for lxsession lite.
 %setup -q
 
 %build
-%configure
+%configure \
+	%{?with_gtk3:--enable-gtk3}
 touch po/stamp-it
 %{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
-rm -rf $RPM_BUILD_ROOT%{_datadir}/locale/{frp,ur_PK}
+%{__rm} -r $RPM_BUILD_ROOT%{_datadir}/locale/{frp,ur_PK}
 
 %find_lang %{name}
 
